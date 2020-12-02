@@ -1,11 +1,11 @@
 import requests
 import datetime
 
-API_END_POiNTS_SHEETY = 'https://api.sheety.co/12c97efe70fa8b60f1607e1b2846422e/exercise/workouts'
-
+SHEET_NAME = 'workout'
+API_END_POiNTS_SHEETY = f"https://api.sheety.co/12c97efe70fa8b60f1607e1b2846422e/exercise/{SHEET_NAME}s"
 API_KEY = "3629ea4681570fb302c63c899a4a06f0"
-SHEET_NAME = 'exercise'
-API_END_POiNTS = f"https://trackapi.nutritionix.com/v2/natural/{SHEET_NAME}"
+
+API_END_POiNTS = f"https://trackapi.nutritionix.com/v2/natural/exercise"
 API_ID = "9b28d2cb"
 
 query = input("Hellow, How much exercises your did today: ")
@@ -27,16 +27,18 @@ HEADER = {
 response = requests.post(API_END_POiNTS, data=params, headers=HEADER)
 json_data = (response.json()['exercises'])
 print(json_data)
-information = [{SHEET_NAME:{
-    'Date': datetime.datetime.now().strftime(f"%d/%m/%Y"),
-    'Time': datetime.datetime.now().strftime("%H:%M:%S"),
-    'Exercise': exercise['user_input'],
-    'Duration': exercise['duration_min'],
-    'Calories': exercise['nf_calories']
+information = [{SHEET_NAME: {
+    'date': datetime.datetime.now().strftime(f"%d/%m/%Y"),
+    'time': datetime.datetime.now().strftime("%H:%M:%S"),
+    'exercise': exercise['user_input'].title(),
+    'duration': exercise['duration_min'],
+    'calories': exercise['nf_calories']
 }
 }
     for exercise in json_data
 ]
 print(information)
 for post in information:
-    response = requests.post(API_END_POiNTS_SHEETY, params=post)
+    print(post)
+    response = requests.post(API_END_POiNTS_SHEETY, json=post)
+    print( response.text)
